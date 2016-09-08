@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Funny Game</title>
+        <style type="text/css">
+            #mybutton{
+                padding-top: 20px;
+                padding-bottom: 20px;
+                font-size: 20px;
+                margin-top: 15px;
+            }
+        </style>
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript">
+            window.onload = function() {
+
+                var welcome = document.getElementById("welcome");
+                var allUsers = document.getElementById("users");
+                var progress = document.getElementById("progress");
+                var results = document.getElementById("results");
+
+                var socket = io.connect('http://localhost:8888');
+
+                socket.on('welcome', function (data) {
+                    welcome.innerHTML = "Welcome to the game: <strong>" + data.name + "</strong>";
+                });
+                socket.on('users', function (data) {
+                    allUsers.innerHTML = "<strong>Users: </strong>" + data.users;
+                });
+                socket.on('update', function (data) {
+                    progress.innerHTML = data.currentClicks;
+                });
+                socket.on('win', function (data) {
+                    results.innerHTML = data.message;
+                });
+
+                mybutton.onclick = function() {
+                    socket.emit("click");
+                }
+            }
+        </script>
+    </head>
+    <body class="main" style="background-color: #eff5f5">
+    <div class="container">
+        <div class="row">
+            <div class="col col-md-2" style="border: 1px solid gray; padding-top:10px; padding-bottom: 10px; padding-right: 10px; padding-left: 10px; background-color: white; margin-top:90px; min-height:50px;">
+                <h2 class="text-center">Users</h2>
+                <hr>
+                <div id="users"></div>
+            </div>
+            <div class="col col-md-8 ">
+            <div class="text-center"><h1>Funny Game - CNTT - BKDN</h1><br></div>
+            <div style="border: 1px solid gray; padding-top:10px; padding-bottom: 10px; padding-right: 10px; padding-left: 10px; background-color: white;">
+                <div id="welcome" class="text-center"></div>
+                <hr />
+                <strong><div id="progress" class="text-center"></div></strong>
+                <div id="win" class="text-center">Finish: <strong>150</strong></div>
+                <hr />
+                
+                <div>
+                    <input type="button" class="btn btn-primary btn-block" id="mybutton" name="click" value="Click me!"/>
+                </div>
+            </div>                
+            </div>
+            <div class="col col-md-2" style="border: 1px solid gray; padding-top:10px; padding-bottom: 10px; padding-right: 10px; padding-left: 10px; background-color: white; margin-top:90px; min-height:100px;"">
+                <h2 class="text-center">WINER</h2><hr>
+                <div id="results" class="text-center"></div>
+            </div>         
+        </div>
+    </div>           
+    </body>
+</html>
